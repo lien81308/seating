@@ -77,8 +77,21 @@ label{font-size:13px;}
 <div class="section">
   <div class="section-title">Step 2. 換座位規則設定</div>
   <label><input type="checkbox" id="checkPos" checked> 1. 新位置不與「歷史紀錄」重複（建議 8 筆內）</label><br>
-  <label style="margin-top:7px;display:inline-block;"><input type="checkbox" id="checkAllNeighbor"> 2. 前後鄰居不與「所有歷史紀錄」重複（建議 3 筆內）</label><br>
-  <label style="margin-top:7px;display:inline-block;"><input type="checkbox" id="checkLastNeighbor"> 3. 前後鄰居不與「前一次紀錄」重複（同時勾選1.建議 5 筆內）</label>
+  <label style="margin-top:8px;display:inline-block;">
+    <input type="checkbox" id="checkNeighborLR"> 2. 左右鄰居（隔壁排同位）不與「歷史紀錄」重複
+    <select id="neighborLRScope" style="margin-left:6px;padding:3px 6px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
+      <option value="all">所有紀錄</option>
+      <option value="last">前一次紀錄</option>
+    </select>
+  </label><br>
+  <label style="margin-top:8px;display:inline-block;">
+    <input type="checkbox" id="checkNeighborCross"> 3. 前後左右鄰居（十字形）不與「歷史紀錄」重複
+    <select id="neighborCrossScope" style="margin-left:6px;padding:3px 6px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
+      <option value="all">所有紀錄</option>
+      <option value="last">前一次紀錄</option>
+    </select>
+  </label>
+  <div style="font-size:12px;color:#aaa;margin-top:8px;">※ 規則2和規則3只需勾選一個，同時勾選以規則3（範圍較大）為準。</div>
 </div>
 
 <div class="section">
@@ -136,21 +149,20 @@ label{font-size:13px;}
 
 <script>
 /*
-  座標系統（老師視角，站在講台看向學生）：
-  col 0..6 = 第1排(老師右手邊)..第7排(老師左手邊)
-  row 0..5 = 第1位(最前・靠講台)..第6位(最後・遠離講台)
-  空位：col=6, row=0（第7排第1位）和 col=6, row=5（第7排第6位）
+  座標系統（老師視角）：
+  col 0..6 = 第1排(右)..第7排(左)
+  row 0..5 = 第1位(前・靠講台)..第6位(後)
+  空位：col=6 且 (row=0 或 row=5)
 
-  畫面呈現：
-  - 水平：col 6(第7排)在最左，col 0(第1排)在最右
-  - 垂直：row 0(第1位・最前) 在最下，row 5(第6位・最後) 在最上
+  鄰居定義：
+  - 左右：col±1，row 相同（隔壁排同位）
+  - 前後左右（十字）：col±1 row 相同，加上 row±1 col 相同
 */
 const ROWS=6, COLS=7;
-
 function isNull(r,c){ return c===6&&(r===0||r===5); }
 
 let historyRecords=[],studentPool=[],currentMatrix=null;
-let fixedRules=[], firstSelected=null, generated=false;
+let fixedRules=[],firstSelected=null,generated=false;
 
 window.onload=()=>{buildHeader();renderChart(null);};
 
@@ -169,30 +181,25 @@ function renderChart(matrix){
   const grid=document.getElementById('chartGrid');
   grid.innerHTML='';
   const fixedSet=new Set(fixedRules.map(f=>`${f.row},${f.col}`));
-
-  // 由上而下：row 5(後)→ row 0(前)
   for(let r=ROWS-1;r>=0;r--){
     const rowDiv=document.createElement('div');
     rowDiv.className='seat-row';
     const rl=document.createElement('div');
     rl.className='row-label';
-    rl.innerHTML=`第${r+1}位`;
+    rl.textContent=`第${r+1}位`;
     rowDiv.appendChild(rl);
-
-    // 由左而右：col 6(第7排)→ col 0(第1排)
     for(let c=COLS-1;c>=0;c--){
       const div=document.createElement('div');
       const nil=isNull(r,c);
       const fixed=fixedSet.has(`${r},${c}`);
       const s=matrix?matrix[r][c]:null;
-
       if(nil){
         div.className='cell empty-slot';
-      } else if(fixed && !matrix){
+      } else if(fixed&&!matrix){
         const rule=fixedRules.find(f=>f.row===r&&f.col===c);
         div.className='cell fixed-cell';
         div.innerHTML=`<span class="badge fix-b">固定</span><div class="coord">${c+1}-${r+1}</div><div class="name" style="font-size:13px">${rule.name}</div>`;
-      } else if(matrix && s){
+      } else if(matrix&&s){
         div.className='cell'+(fixed?' fixed-cell':'');
         if(generated) div.classList.add('clickable');
         div.innerHTML=`<span class="badge fix-b">固定</span><span class="badge sel-b">已選</span><div class="sid">${s.id}</div><div class="name">${s.name}</div>`;
@@ -207,6 +214,7 @@ function renderChart(matrix){
   }
 }
 
+/* ── 固定規則 ── */
 function addFixed(){
   const name=document.getElementById('fixName').value.trim();
   const cv=document.getElementById('fixCol').value;
@@ -222,8 +230,7 @@ function addFixed(){
   document.getElementById('fixName').value='';
   document.getElementById('fixCol').value='';
   document.getElementById('fixRow').value='';
-  renderFixedList();
-  renderChart(currentMatrix);
+  renderFixedList();renderChart(currentMatrix);
 }
 function removeFixed(i){fixedRules.splice(i,1);renderFixedList();renderChart(currentMatrix);}
 function renderFixedList(){
@@ -237,6 +244,7 @@ function renderFixedList(){
     </div>`).join('');
 }
 
+/* ── 歷史資料 ── */
 async function handleFiles(input){
   for(const file of Array.from(input.files)){
     const ab=await file.arrayBuffer();
@@ -245,13 +253,6 @@ async function handleFiles(input){
   }
   input.value='';
 }
-
-/*
-  docx 表格解析：
-  表格第 ti 列、第 ci 欄 對應到：
-  - seatRow = ROWS-1-ti （表格最上方 = 最後排 = row ROWS-1）
-  - seatCol = COLS-1-ci （表格最左欄 = 第7排 = col 6）
-*/
 function parseDocx(html,filename){
   const div=document.createElement('div');div.innerHTML=html;
   const table=div.querySelector('table');if(!table)return;
@@ -262,23 +263,21 @@ function parseDocx(html,filename){
   trs.forEach((tr,ti)=>{
     Array.from(tr.querySelectorAll('td')).forEach((td,ci)=>{
       const text=td.innerText.trim();
-      const sr=ROWS-1-ti, sc=COLS-1-ci;
+      const sr=ROWS-1-ti,sc=COLS-1-ci;
       if(sr<0||sr>=ROWS||sc<0||sc>=COLS) return;
       if(!text||text==='null'||isNull(sr,sc)) return;
       const m=text.match(/^(\d+)\s*(.*)$/);
       const s=m?{id:m[1],name:m[2].trim()}:{id:'?',name:text};
-      matrix[sr][sc]=s;
-      students.push(s);
+      matrix[sr][sc]=s;students.push(s);
     });
   });
   historyRecords.push({filename,matrix});
   studentPool=students;
   updateHistoryUI();
-  currentMatrix=matrix; generated=false;
+  currentMatrix=matrix;generated=false;
   renderChart(currentMatrix);
   document.getElementById('downloadBtn').disabled=false;
 }
-
 function updateHistoryUI(){
   const c=document.getElementById('historyContainer');
   c.innerHTML=historyRecords.map((rec,i)=>`
@@ -286,6 +285,7 @@ function updateHistoryUI(){
 }
 function removeHistory(i){historyRecords.splice(i,1);updateHistoryUI();}
 
+/* ── 對換 ── */
 function handleCellClick(div,r,c,s){
   if(!currentMatrix||!s)return;
   if(!firstSelected){
@@ -307,6 +307,34 @@ function handleCellClick(div,r,c,s){
   }
 }
 
+/* ── 鄰居取得 ── */
+// 左右：隔壁排同位 (col±1, row 相同)
+function getNeighborsLR(r,c){
+  const nb=[];
+  if(c>0) nb.push({r,c:c-1});
+  if(c<COLS-1) nb.push({r,c:c+1});
+  return nb;
+}
+// 前後左右：左右 + 前後 (row±1, col 相同)
+function getNeighborsCross(r,c){
+  const nb=getNeighborsLR(r,c);
+  if(r>0) nb.push({r:r-1,c});
+  if(r<ROWS-1) nb.push({r:r+1,c});
+  return nb;
+}
+
+// 檢查 n1 和 n2 在某筆歷史紀錄裡是否為鄰居（依模式）
+function wereNeighbors(n1,n2,matrix,mode){
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    if(!matrix[r]||!matrix[r][c]||matrix[r][c].name!==n1) continue;
+    const nbs=mode==='cross'?getNeighborsCross(r,c):getNeighborsLR(r,c);
+    for(const{r:nr,c:nc} of nbs)
+      if(matrix[nr]&&matrix[nr][nc]&&matrix[nr][nc].name===n2) return true;
+  }
+  return false;
+}
+
+/* ── 產生座位（回溯 + MRV + 剪枝） ── */
 function generateSeats(){
   if(!studentPool.length) return alert('請先匯入座位表作為名單參考！');
   for(const f of fixedRules)
@@ -314,50 +342,92 @@ function generateSeats(){
       return alert(`找不到學生「${f.name}」，請確認姓名與座位表一致。`);
 
   const optPos=document.getElementById('checkPos').checked;
-  const optAllN=document.getElementById('checkAllNeighbor').checked;
-  const optLastN=document.getElementById('checkLastNeighbor').checked;
+  const optLR=document.getElementById('checkNeighborLR').checked;
+  const optCross=document.getElementById('checkNeighborCross').checked;
+  const scopeLR=document.getElementById('neighborLRScope').value;   // 'all' or 'last'
+  const scopeCross=document.getElementById('neighborCrossScope').value;
 
+  // 鄰居模式：cross 優先（範圍含 LR）
+  const neighborMode=optCross?'cross':optLR?'lr':null;
+  const neighborScope=optCross?scopeCross:optLR?scopeLR:null;
+
+  // 固定座位
   const fixedPosMap={};
   const fixedNameSet=new Set();
   for(const f of fixedRules){
     fixedPosMap[`${f.row},${f.col}`]=studentPool.find(s=>s.name===f.name);
     fixedNameSet.add(f.name);
   }
+
   const freeStudents=studentPool.filter(s=>!fixedNameSet.has(s.name));
   const freeSeats=[];
   for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++)
     if(!isNull(r,c)&&!fixedPosMap[`${r},${c}`]) freeSeats.push({r,c});
 
-  let attempts=0,success=false,result=null;
-  while(attempts<3000&&!success){
-    attempts++;
-    const shuffled=[...freeStudents].sort(()=>Math.random()-.5);
-    const temp=[];
-    for(let r=0;r<ROWS;r++){temp[r]=[];for(let c=0;c<COLS;c++)temp[r][c]=isNull(r,c)?null:null;}
-    let conflict=false;
-
-    for(const key in fixedPosMap){const[r,c]=key.split(',').map(Number);temp[r][c]=fixedPosMap[key];}
-
-    for(let i=0;i<freeSeats.length;i++){
-      const{r,c}=freeSeats[i];const s=shuffled[i];
-      if(!s){conflict=true;break;}
-      if(optPos){
-        for(const rec of historyRecords){
-          if(rec.matrix[r]&&rec.matrix[r][c]&&rec.matrix[r][c].name===s.name){conflict=true;break;}
-        }
-        if(conflict) break;
-      }
-      temp[r][c]=s;
-      // 鄰居：同排(同col)相鄰位(row±1) = 前後座
-      if(r>0&&temp[r-1][c]&&temp[r-1][c].name){
-        const nb=temp[r-1][c];
-        if(optAllN){for(const rec of historyRecords){if(isNeighbor(s.name,nb.name,rec.matrix)){conflict=true;break;}}}
-        else if(optLastN&&historyRecords.length>0){if(isNeighbor(s.name,nb.name,historyRecords[historyRecords.length-1].matrix))conflict=true;}
-        if(conflict) break;
-      }
+  // Step 1：為每位學生建立可用座位清單（排除歷史位置）
+  const candidates=freeStudents.map(s=>{
+    let seats=[...freeSeats];
+    if(optPos){
+      seats=seats.filter(({r,c})=>{
+        for(const rec of historyRecords)
+          if(rec.matrix[r]&&rec.matrix[r][c]&&rec.matrix[r][c].name===s.name) return false;
+        return true;
+      });
     }
-    if(!conflict){result=temp;success=true;}
+    return {s,seats};
+  });
+
+  // Step 2：MRV 排序（可用位置少的優先），同數量隨機打亂
+  candidates.sort((a,b)=>{
+    if(a.seats.length!==b.seats.length) return a.seats.length-b.seats.length;
+    return Math.random()-0.5;
+  });
+
+  // 初始化結果矩陣
+  const result=[];
+  for(let r=0;r<ROWS;r++){result[r]=[];for(let c=0;c<COLS;c++)result[r][c]=null;}
+  for(const key in fixedPosMap){const[r,c]=key.split(',').map(Number);result[r][c]=fixedPosMap[key];}
+
+  const usedSeats=new Set(Object.keys(fixedPosMap));
+
+  // 鄰居衝突檢查
+  function checkNeighbor(s,r,c){
+    if(!neighborMode) return true;
+    const nbs=neighborMode==='cross'?getNeighborsCross(r,c):getNeighborsLR(r,c);
+    const recsToCheck=neighborScope==='last'
+      ?( historyRecords.length>0?[historyRecords[historyRecords.length-1]]:[] )
+      :historyRecords;
+
+    // 檢查當前矩陣中已就坐的鄰居：他們不能和 s 曾是鄰居
+    for(const{r:nr,c:nc} of nbs){
+      const seated=result[nr]&&result[nr][nc];
+      if(!seated) continue;
+      for(const rec of recsToCheck)
+        if(wereNeighbors(s.name,seated.name,rec.matrix,neighborMode)) return false;
+    }
+    return true;
   }
+
+  // Step 3：回溯
+  function backtrack(idx){
+    if(idx===candidates.length) return true;
+    const{s,seats}=candidates[idx];
+    const available=seats
+      .filter(({r,c})=>!usedSeats.has(`${r},${c}`))
+      .sort(()=>Math.random()-0.5);
+
+    for(const{r,c} of available){
+      if(!checkNeighbor(s,r,c)) continue;
+      result[r][c]=s;
+      usedSeats.add(`${r},${c}`);
+      if(backtrack(idx+1)) return true;
+      result[r][c]=null;
+      usedSeats.delete(`${r},${c}`);
+    }
+    return false;
+  }
+
+  const success=backtrack(0);
 
   if(success){
     currentMatrix=result;generated=true;firstSelected=null;
@@ -366,25 +436,15 @@ function generateSeats(){
     document.getElementById('downloadBtn').disabled=false;
     document.getElementById('swapHint').textContent='點選第一個要對換的座位';
   } else {
-    alert('【排座位提醒】\n\n系統嘗試多次後仍無法排出符合所有要求的座位。\n\n💡 建議：\n1. 移除較舊的座位紀錄\n2. 取消部分勾選的規則\n3. 減少固定座位人數\n4. 再試一次！');
+    alert('【真的無解】\n\n系統已窮舉所有可能的排列，確認在目前規則下無法排出合法座位。\n\n💡 建議：\n1. 移除較舊的座位紀錄\n2. 取消部分勾選的規則\n3. 減少固定座位人數');
   }
 }
 
-function isNeighbor(n1,n2,matrix){
-  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++)
-    if(matrix[r]&&matrix[r][c]&&matrix[r][c].name===n1){
-      const up=r>0?matrix[r-1][c]:null;
-      const dn=r<ROWS-1?matrix[r+1][c]:null;
-      if((up&&up.name===n2)||(dn&&dn.name===n2)) return true;
-    }
-  return false;
-}
-
+/* ── 匯出 Word ── */
 function exportToWord(){
   if(!currentMatrix)return;
   const{Document,Table,TableRow,TableCell,Paragraph,TextRun,AlignmentType,WidthType,BorderStyle,VerticalAlign,Packer}=window.docx;
   const tableRows=[];
-  // 輸出順序：上方=後排(row ROWS-1)，左方=第7排(col COLS-1)
   for(let ti=0;ti<ROWS;ti++){
     const sr=ROWS-1-ti;
     const cells=[];
