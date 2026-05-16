@@ -11,7 +11,7 @@
 :root{--primary:#1a73e8;--green:#0b8043;--orange:#e37400;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:"Microsoft JhengHei",sans-serif;padding:16px;background:#f0f2f5;color:#333;}
-.container{max-width:1040px;margin:auto;background:white;padding:24px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);}
+.container{max-width:900px;margin:auto;background:white;padding:24px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);}
 h1{text-align:center;color:var(--primary);margin-bottom:20px;font-size:20px;}
 .section{background:#f8f9fa;padding:16px;border-radius:8px;margin-bottom:14px;border:1px solid #e0e0e0;}
 .section-title{font-weight:bold;margin-bottom:10px;color:#444;border-bottom:2px solid #ddd;padding-bottom:4px;font-size:14px;}
@@ -20,34 +20,36 @@ h1{text-align:center;color:var(--primary);margin-bottom:20px;font-size:20px;}
 .btn-del{color:#d93025;cursor:pointer;font-size:12px;border:1px solid #d93025;padding:2px 7px;border-radius:4px;}
 .fix-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
 .fix-form input,.fix-form select{padding:6px 10px;border:1px solid #ccc;border-radius:6px;font-size:13px;font-family:inherit;}
-.fix-form input{width:130px;}
-.fix-form select{width:100px;}
+.fix-form input{width:140px;}
+.fix-form select{width:110px;}
 .fix-form button{padding:6px 14px;font-size:13px;background:var(--green);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:bold;}
 .fixed-entry{display:flex;align-items:center;gap:8px;background:white;padding:5px 10px;margin-bottom:4px;border-radius:6px;border:1px solid #a8d5b5;font-size:13px;}
 .fixed-entry .loc{color:#0b8043;background:#e6f4ea;padding:2px 8px;border-radius:10px;font-size:12px;}
 .fixed-entry .rm{margin-left:auto;color:#d93025;cursor:pointer;font-size:12px;border:1px solid #d93025;padding:2px 7px;border-radius:4px;}
 .no-fixed{color:#999;font-size:13px;font-style:italic;}
-.chart-wrap{overflow-x:auto;margin:16px 0;}
-.seating-chart{display:grid;grid-template-columns:28px repeat(6,1fr);gap:6px;width:fit-content;margin:0 auto;}
-.row-label{display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;font-weight:bold;width:28px;}
-.col-labels{display:grid;grid-template-columns:28px repeat(6,1fr);gap:6px;width:fit-content;margin:0 auto 4px;}
-.col-label{text-align:center;font-size:11px;color:#999;font-weight:bold;}
-.cell{width:108px;height:82px;border:2px solid #d0d0d0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:white;border-radius:6px;position:relative;transition:border-color .15s,background .15s;}
-.cell.seat{cursor:default;}
+.chart-outer{overflow-x:auto;margin:16px 0;}
+.chart-wrap{display:inline-flex;flex-direction:column;align-items:flex-start;}
+.col-header{display:flex;margin-bottom:4px;}
+.col-header-spacer{width:48px;flex-shrink:0;}
+.col-label{width:82px;flex-shrink:0;text-align:center;font-size:11px;color:#999;font-weight:bold;}
+.seat-row{display:flex;align-items:center;margin-bottom:6px;}
+.row-label{width:48px;flex-shrink:0;text-align:center;font-size:11px;color:#999;font-weight:bold;line-height:1.3;}
+.cell{width:82px;height:70px;border:2px solid #ddd;display:flex;flex-direction:column;justify-content:center;align-items:center;background:white;border-radius:6px;position:relative;transition:border-color .15s,background .15s;flex-shrink:0;margin-right:6px;}
+.cell:last-child{margin-right:0;}
 .cell.clickable{cursor:pointer;}
 .cell.clickable:hover{border-color:var(--primary);background:#e8f0fe;}
 .cell.empty-slot{background:#f5f5f5;border:2px dashed #e0e0e0;}
-.cell.blank{border-color:#e0e0e0;background:#fafafa;}
-.cell .coord{font-size:11px;color:#ccc;user-select:none;}
+.cell.blank{border-color:#e8e8e8;background:#fafafa;}
+.cell .coord{font-size:10px;color:#ccc;user-select:none;}
 .cell .sid{font-size:11px;color:#888;}
-.cell .name{font-size:17px;font-weight:bold;color:#222;}
+.cell .name{font-size:15px;font-weight:bold;color:#222;}
 .cell.fixed-cell{border:2px solid var(--green);background:#e6f4ea;}
-.cell.fixed-cell .coord{color:#a8d5b5;}
 .cell.sel1{border:2.5px solid var(--orange);background:#fff3e0;}
-.badge{display:none;position:absolute;top:3px;right:3px;font-size:10px;padding:1px 5px;border-radius:3px;color:white;}
+.badge{display:none;position:absolute;top:2px;right:3px;font-size:9px;padding:1px 4px;border-radius:3px;color:white;}
 .cell.fixed-cell .fix-b{display:block;background:var(--green);}
 .cell.sel1 .sel-b{display:block;background:var(--orange);}
-.podium{width:200px;margin:8px auto 16px;padding:10px;border:3px solid #333;text-align:center;font-weight:bold;font-size:18px;letter-spacing:10px;background:white;border-radius:4px;}
+.podium{width:180px;margin:4px auto 16px;padding:8px;border:3px solid #333;text-align:center;font-weight:bold;font-size:16px;letter-spacing:8px;background:white;border-radius:4px;}
+.direction-note{text-align:center;font-size:12px;color:#aaa;margin-bottom:4px;}
 .btn-group{text-align:center;margin:12px 0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
 button.main{padding:10px 20px;font-size:14px;font-weight:bold;border:none;border-radius:6px;cursor:pointer;}
 .btn-primary{background:var(--primary);color:white;}
@@ -56,7 +58,7 @@ button.main{padding:10px 20px;font-size:14px;font-weight:bold;border:none;border
 .swap-section.visible{display:block;}
 .hint{font-size:13px;padding:7px 12px;border-radius:6px;background:#fff3e0;color:#7a4f00;border:1px solid #f4a93a;display:inline-block;}
 label{font-size:13px;}
-@media print{.section,.btn-group,.upload-area,.btn-del,.swap-section{display:none!important;}}
+@media print{.section,.btn-group,.upload-area,.btn-del,.swap-section,.direction-note{display:none!important;}}
 </style>
 </head>
 <body>
@@ -75,41 +77,52 @@ label{font-size:13px;}
 <div class="section">
   <div class="section-title">Step 2. 換座位規則設定</div>
   <label><input type="checkbox" id="checkPos" checked> 1. 新位置不與「歷史紀錄」重複（建議 8 筆內）</label><br>
-  <label style="margin-top:7px;display:inline-block;"><input type="checkbox" id="checkAllNeighbor"> 2. 左右鄰居不與「所有歷史紀錄」重複（建議 3 筆內）</label><br>
-  <label style="margin-top:7px;display:inline-block;"><input type="checkbox" id="checkLastNeighbor"> 3. 左右鄰居不與「前一次紀錄」重複（同時勾選1.建議 5 筆內）</label>
+  <label style="margin-top:7px;display:inline-block;"><input type="checkbox" id="checkAllNeighbor"> 2. 前後鄰居不與「所有歷史紀錄」重複（建議 3 筆內）</label><br>
+  <label style="margin-top:7px;display:inline-block;"><input type="checkbox" id="checkLastNeighbor"> 3. 前後鄰居不與「前一次紀錄」重複（同時勾選1.建議 5 筆內）</label>
 </div>
 
 <div class="section">
-  <div class="section-title">Step 3. 固定座位設定（參考下方座位表輸入排-位編號）</div>
+  <div class="section-title">Step 3. 固定座位設定（參考下方座位表的排-位編號）</div>
   <div class="fix-form">
     <input type="text" id="fixName" placeholder="姓名（與座位表一致）"/>
-    <select id="fixRow">
-      <option value="">選排</option>
-      <option value="0">第1排</option><option value="1">第2排</option>
-      <option value="2">第3排</option><option value="3">第4排</option>
-      <option value="4">第5排</option><option value="5">第6排</option>
-    </select>
     <select id="fixCol">
-      <option value="">選位</option>
-      <option value="1">第1位</option><option value="2">第2位</option>
-      <option value="3">第3位</option><option value="4">第4位</option>
-      <option value="5">第5位</option><option value="6">第6位</option>
+      <option value="">選排（左右）</option>
+      <option value="0">第1排（最右）</option>
+      <option value="1">第2排</option>
+      <option value="2">第3排</option>
+      <option value="3">第4排</option>
+      <option value="4">第5排</option>
+      <option value="5">第6排</option>
+      <option value="6">第7排（最左）</option>
+    </select>
+    <select id="fixRow">
+      <option value="">選位（前後）</option>
+      <option value="0">第1位（最前）</option>
+      <option value="1">第2位</option>
+      <option value="2">第3位</option>
+      <option value="3">第4位</option>
+      <option value="4">第5位</option>
+      <option value="5">第6位（最後）</option>
     </select>
     <button onclick="addFixed()">＋ 新增</button>
   </div>
-  <div style="font-size:12px;color:#888;margin-bottom:8px;">※ 第1排第1位為空位。姓名請與座位表完全一致。</div>
+  <div style="font-size:12px;color:#888;margin-bottom:8px;">※ 第7排第1位、第7排第6位為空位，無法固定。</div>
   <div id="fixedListContainer"><div class="no-fixed">尚未設定固定座位</div></div>
 </div>
 
-<div class="chart-wrap">
-  <div class="col-labels" id="colLabels"></div>
-  <div class="seating-chart" id="chartGrid"></div>
-</div>
-<div class="podium">講臺</div>
-
-<div class="btn-group">
+<div class="btn-group" style="margin-bottom:0;">
   <button class="main btn-primary" onclick="generateSeats()">🎲 產生新座位</button>
 </div>
+
+<div class="direction-note" style="margin-top:16px;">← 第7排（最左）　　　　第1排（最右）→</div>
+<div class="chart-outer">
+  <div class="chart-wrap">
+    <div class="col-header" id="colHeader"></div>
+    <div id="chartGrid"></div>
+  </div>
+</div>
+<div class="direction-note">↑ 第1位（靠講台・最前）</div>
+<div class="podium">講　臺</div>
 
 <div class="section swap-section" id="swapSection">
   <div class="section-title">Step 4. 手動對換（點選兩個座位來互換）</div>
@@ -122,106 +135,104 @@ label{font-size:13px;}
 </div>
 
 <script>
-const LAYOUT=[
-  [null,1,1,1,1,1,1],
-  [1,1,1,1,1,1,1],
-  [1,1,1,1,1,1,1],
-  [1,1,1,1,1,1,1],
-  [1,1,1,1,1,1,1],
-  [null,1,1,1,1,1,1]
-];
+/*
+  座標系統（老師視角，站在講台看向學生）：
+  col 0..6 = 第1排(老師右手邊)..第7排(老師左手邊)
+  row 0..5 = 第1位(最前・靠講台)..第6位(最後・遠離講台)
+  空位：col=6, row=0（第7排第1位）和 col=6, row=5（第7排第6位）
+
+  畫面呈現：
+  - 水平：col 6(第7排)在最左，col 0(第1排)在最右
+  - 垂直：row 0(第1位・最前) 在最下，row 5(第6位・最後) 在最上
+*/
+const ROWS=6, COLS=7;
+
+function isNull(r,c){ return c===6&&(r===0||r===5); }
+
 let historyRecords=[],studentPool=[],currentMatrix=null;
-let fixedRules=[];
-let firstSelected=null;
-let generated=false;
+let fixedRules=[], firstSelected=null, generated=false;
 
-window.onload=()=>{buildColLabels();renderChart(null);};
+window.onload=()=>{buildHeader();renderChart(null);};
 
-function buildColLabels(){
-  const cl=document.getElementById('colLabels');
-  cl.innerHTML='<div class="col-label" style="width:28px"></div>';
-  for(let c=1;c<=6;c++) cl.innerHTML+=`<div class="col-label" style="width:108px;">第${c}位</div>`;
+function buildHeader(){
+  const hdr=document.getElementById('colHeader');
+  hdr.innerHTML='<div class="col-header-spacer"></div>';
+  for(let c=COLS-1;c>=0;c--){
+    const d=document.createElement('div');
+    d.className='col-label';
+    d.textContent=`第${c+1}排`;
+    hdr.appendChild(d);
+  }
 }
 
 function renderChart(matrix){
   const grid=document.getElementById('chartGrid');
   grid.innerHTML='';
-  const fixedPosSet=new Set(fixedRules.map(f=>`${f.r},${f.c}`));
-  const isEmpty=!matrix;
+  const fixedSet=new Set(fixedRules.map(f=>`${f.row},${f.col}`));
 
-  for(let r=0;r<6;r++){
+  // 由上而下：row 5(後)→ row 0(前)
+  for(let r=ROWS-1;r>=0;r--){
+    const rowDiv=document.createElement('div');
+    rowDiv.className='seat-row';
     const rl=document.createElement('div');
     rl.className='row-label';
-    rl.textContent=`第${r+1}排`;
-    grid.appendChild(rl);
+    rl.innerHTML=`第${r+1}位`;
+    rowDiv.appendChild(rl);
 
-    for(let c=1;c<=6;c++){
+    // 由左而右：col 6(第7排)→ col 0(第1排)
+    for(let c=COLS-1;c>=0;c--){
       const div=document.createElement('div');
-      const layoutVal=LAYOUT[r][c];
-
-      if(layoutVal===null){
-        div.className='cell empty-slot';
-        grid.appendChild(div);
-        continue;
-      }
-
-      const isFixed=fixedPosSet.has(`${r},${c}`);
+      const nil=isNull(r,c);
+      const fixed=fixedSet.has(`${r},${c}`);
       const s=matrix?matrix[r][c]:null;
 
-      if(isFixed&&isEmpty){
-        const rule=fixedRules.find(f=>f.r===r&&f.c===c);
+      if(nil){
+        div.className='cell empty-slot';
+      } else if(fixed && !matrix){
+        const rule=fixedRules.find(f=>f.row===r&&f.col===c);
         div.className='cell fixed-cell';
-        div.innerHTML=`<span class="badge fix-b">固定</span><div class="coord">${r+1}-${c}</div><div class="name" style="font-size:14px">${rule.name}</div>`;
-      } else if(isFixed&&matrix&&s){
-        div.className='cell seat fixed-cell'+(generated?' clickable':'');
+        div.innerHTML=`<span class="badge fix-b">固定</span><div class="coord">${c+1}-${r+1}</div><div class="name" style="font-size:13px">${rule.name}</div>`;
+      } else if(matrix && s){
+        div.className='cell'+(fixed?' fixed-cell':'');
+        if(generated) div.classList.add('clickable');
         div.innerHTML=`<span class="badge fix-b">固定</span><span class="badge sel-b">已選</span><div class="sid">${s.id}</div><div class="name">${s.name}</div>`;
-        if(generated) div.addEventListener('click',()=>handleCellClick(div,r,c,s));
-      } else if(!isEmpty&&s){
-        div.className='cell seat'+(generated?' clickable':'');
-        div.innerHTML=`<span class="badge fix-b">固定</span><span class="badge sel-b">已選</span><div class="sid">${s.id}</div><div class="name">${s.name}</div>`;
-        if(generated) div.addEventListener('click',()=>handleCellClick(div,r,c,s));
+        if(generated){const _r=r,_c=c,_s=s;div.addEventListener('click',()=>handleCellClick(div,_r,_c,_s));}
       } else {
         div.className='cell blank';
-        div.innerHTML=`<div class="coord">${r+1}-${c}</div>`;
+        div.innerHTML=`<div class="coord">${c+1}-${r+1}</div>`;
       }
-
-      grid.appendChild(div);
+      rowDiv.appendChild(div);
     }
+    grid.appendChild(rowDiv);
   }
 }
 
 function addFixed(){
   const name=document.getElementById('fixName').value.trim();
-  const r=document.getElementById('fixRow').value;
-  const c=document.getElementById('fixCol').value;
+  const cv=document.getElementById('fixCol').value;
+  const rv=document.getElementById('fixRow').value;
   if(!name) return alert('請輸入姓名');
-  if(r==='') return alert('請選擇排');
-  if(c==='') return alert('請選擇位');
-  const ri=parseInt(r),ci=parseInt(c);
-  if(LAYOUT[ri][ci]===null) return alert('該位置是空位，無法固定');
+  if(cv==='') return alert('請選擇排');
+  if(rv==='') return alert('請選擇位');
+  const ci=parseInt(cv),ri=parseInt(rv);
+  if(isNull(ri,ci)) return alert('該位置是空位，無法固定');
   if(fixedRules.find(f=>f.name===name)) return alert(`「${name}」已設定固定`);
-  if(fixedRules.find(f=>f.r===ri&&f.c===ci)) return alert('該位置已被其他人固定');
-  fixedRules.push({name,r:ri,c:ci});
+  if(fixedRules.find(f=>f.row===ri&&f.col===ci)) return alert('該位置已被其他人固定');
+  fixedRules.push({name,row:ri,col:ci});
   document.getElementById('fixName').value='';
-  document.getElementById('fixRow').value='';
   document.getElementById('fixCol').value='';
+  document.getElementById('fixRow').value='';
   renderFixedList();
   renderChart(currentMatrix);
 }
-
-function removeFixed(i){
-  fixedRules.splice(i,1);
-  renderFixedList();
-  renderChart(currentMatrix);
-}
-
+function removeFixed(i){fixedRules.splice(i,1);renderFixedList();renderChart(currentMatrix);}
 function renderFixedList(){
   const c=document.getElementById('fixedListContainer');
   if(!fixedRules.length){c.innerHTML='<div class="no-fixed">尚未設定固定座位</div>';return;}
   c.innerHTML=fixedRules.map((f,i)=>`
     <div class="fixed-entry">
       <span>📌 <b>${f.name}</b></span>
-      <span class="loc">${f.r+1}-${f.c} （第${f.r+1}排 第${f.c}位）</span>
+      <span class="loc">第${f.col+1}排 第${f.row+1}位</span>
       <span class="rm" onclick="removeFixed(${i})">移除</span>
     </div>`).join('');
 }
@@ -230,31 +241,42 @@ async function handleFiles(input){
   for(const file of Array.from(input.files)){
     const ab=await file.arrayBuffer();
     const result=await mammoth.convertToHtml({arrayBuffer:ab});
-    parseTable(result.value,file.name);
+    parseDocx(result.value,file.name);
   }
   input.value='';
 }
 
-function parseTable(html,filename){
+/*
+  docx 表格解析：
+  表格第 ti 列、第 ci 欄 對應到：
+  - seatRow = ROWS-1-ti （表格最上方 = 最後排 = row ROWS-1）
+  - seatCol = COLS-1-ci （表格最左欄 = 第7排 = col 6）
+*/
+function parseDocx(html,filename){
   const div=document.createElement('div');div.innerHTML=html;
   const table=div.querySelector('table');if(!table)return;
-  let matrix=[],students=[];
-  table.querySelectorAll('tr').forEach(row=>{
-    let rowData=[];
-    row.querySelectorAll('td').forEach(cell=>{
-      const text=cell.innerText.trim();
-      if(!text||text==='null'){rowData.push(null);}
-      else{
-        const m=text.match(/^(\d+)\s*(.*)$/);
-        const s=m?{id:m[1],name:m[2].trim()}:{id:'?',name:text};
-        rowData.push(s);students.push(s);
-      }
+  const trs=Array.from(table.querySelectorAll('tr'));
+  const matrix=[];
+  for(let r=0;r<ROWS;r++){matrix[r]=[];for(let c=0;c<COLS;c++)matrix[r][c]=null;}
+  const students=[];
+  trs.forEach((tr,ti)=>{
+    Array.from(tr.querySelectorAll('td')).forEach((td,ci)=>{
+      const text=td.innerText.trim();
+      const sr=ROWS-1-ti, sc=COLS-1-ci;
+      if(sr<0||sr>=ROWS||sc<0||sc>=COLS) return;
+      if(!text||text==='null'||isNull(sr,sc)) return;
+      const m=text.match(/^(\d+)\s*(.*)$/);
+      const s=m?{id:m[1],name:m[2].trim()}:{id:'?',name:text};
+      matrix[sr][sc]=s;
+      students.push(s);
     });
-    matrix.push(rowData);
   });
   historyRecords.push({filename,matrix});
   studentPool=students;
   updateHistoryUI();
+  currentMatrix=matrix; generated=false;
+  renderChart(currentMatrix);
+  document.getElementById('downloadBtn').disabled=false;
 }
 
 function updateHistoryUI(){
@@ -262,9 +284,7 @@ function updateHistoryUI(){
   c.innerHTML=historyRecords.map((rec,i)=>`
     <div class="history-item"><span>📄 ${rec.filename}</span><span class="btn-del" onclick="removeHistory(${i})">移除</span></div>`).join('');
 }
-function removeHistory(i){
-  historyRecords.splice(i,1);updateHistoryUI();
-}
+function removeHistory(i){historyRecords.splice(i,1);updateHistoryUI();}
 
 function handleCellClick(div,r,c,s){
   if(!currentMatrix||!s)return;
@@ -275,8 +295,7 @@ function handleCellClick(div,r,c,s){
   } else {
     if(firstSelected.r===r&&firstSelected.c===c){
       div.classList.remove('sel1');firstSelected=null;
-      document.getElementById('swapHint').textContent='點選第一個要對換的座位';
-      return;
+      document.getElementById('swapHint').textContent='點選第一個要對換的座位';return;
     }
     const a=firstSelected,b={r,c};
     const tmp=currentMatrix[a.r][a.c];
@@ -295,28 +314,30 @@ function generateSeats(){
       return alert(`找不到學生「${f.name}」，請確認姓名與座位表一致。`);
 
   const optPos=document.getElementById('checkPos').checked;
-  const optAllNeighbor=document.getElementById('checkAllNeighbor').checked;
-  const optLastNeighbor=document.getElementById('checkLastNeighbor').checked;
+  const optAllN=document.getElementById('checkAllNeighbor').checked;
+  const optLastN=document.getElementById('checkLastNeighbor').checked;
 
   const fixedPosMap={};
   const fixedNameSet=new Set();
   for(const f of fixedRules){
-    fixedPosMap[`${f.r},${f.c}`]=studentPool.find(s=>s.name===f.name);
+    fixedPosMap[`${f.row},${f.col}`]=studentPool.find(s=>s.name===f.name);
     fixedNameSet.add(f.name);
   }
   const freeStudents=studentPool.filter(s=>!fixedNameSet.has(s.name));
   const freeSeats=[];
-  LAYOUT.forEach((row,r)=>row.forEach((v,c)=>{
-    if(v===1&&!fixedPosMap[`${r},${c}`]) freeSeats.push({r,c});
-  }));
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++)
+    if(!isNull(r,c)&&!fixedPosMap[`${r},${c}`]) freeSeats.push({r,c});
 
-  let attempts=0,success=false,resultMatrix=null;
+  let attempts=0,success=false,result=null;
   while(attempts<3000&&!success){
     attempts++;
     const shuffled=[...freeStudents].sort(()=>Math.random()-.5);
-    const temp=LAYOUT.map(row=>row.map(v=>v===null?null:null));
+    const temp=[];
+    for(let r=0;r<ROWS;r++){temp[r]=[];for(let c=0;c<COLS;c++)temp[r][c]=isNull(r,c)?null:null;}
     let conflict=false;
+
     for(const key in fixedPosMap){const[r,c]=key.split(',').map(Number);temp[r][c]=fixedPosMap[key];}
+
     for(let i=0;i<freeSeats.length;i++){
       const{r,c}=freeSeats[i];const s=shuffled[i];
       if(!s){conflict=true;break;}
@@ -324,37 +345,37 @@ function generateSeats(){
         for(const rec of historyRecords){
           if(rec.matrix[r]&&rec.matrix[r][c]&&rec.matrix[r][c].name===s.name){conflict=true;break;}
         }
-        if(conflict)break;
+        if(conflict) break;
       }
       temp[r][c]=s;
-      if(c>0){
-        const lp=temp[r][c-1];
-        if(lp&&lp.name){
-          if(optAllNeighbor){for(const rec of historyRecords){if(isNeighborInTable(s.name,lp.name,rec.matrix)){conflict=true;break;}}}
-          else if(optLastNeighbor&&historyRecords.length>0){if(isNeighborInTable(s.name,lp.name,historyRecords[historyRecords.length-1].matrix))conflict=true;}
-          if(conflict)break;
-        }
+      // 鄰居：同排(同col)相鄰位(row±1) = 前後座
+      if(r>0&&temp[r-1][c]&&temp[r-1][c].name){
+        const nb=temp[r-1][c];
+        if(optAllN){for(const rec of historyRecords){if(isNeighbor(s.name,nb.name,rec.matrix)){conflict=true;break;}}}
+        else if(optLastN&&historyRecords.length>0){if(isNeighbor(s.name,nb.name,historyRecords[historyRecords.length-1].matrix))conflict=true;}
+        if(conflict) break;
       }
     }
-    if(!conflict){resultMatrix=temp;success=true;}
+    if(!conflict){result=temp;success=true;}
   }
 
   if(success){
-    currentMatrix=resultMatrix;generated=true;firstSelected=null;
+    currentMatrix=result;generated=true;firstSelected=null;
     renderChart(currentMatrix);
     document.getElementById('swapSection').classList.add('visible');
     document.getElementById('downloadBtn').disabled=false;
     document.getElementById('swapHint').textContent='點選第一個要對換的座位';
   } else {
-    alert('【排座位提醒】\n\n系統嘗試多次後仍無法排出符合所有要求的座位。\n\n💡 建議：\n1. 移除較舊的座位紀錄\n2. 取消部分規則\n3. 減少固定座位人數\n4. 再試一次！');
+    alert('【排座位提醒】\n\n系統嘗試多次後仍無法排出符合所有要求的座位。\n\n💡 建議：\n1. 移除較舊的座位紀錄\n2. 取消部分勾選的規則\n3. 減少固定座位人數\n4. 再試一次！');
   }
 }
 
-function isNeighborInTable(n1,n2,matrix){
-  for(let r=0;r<matrix.length;r++)for(let c=0;c<matrix[r].length;c++)
-    if(matrix[r][c]&&matrix[r][c].name===n1){
-      const l=c>0?matrix[r][c-1]:null,rr=c<matrix[r].length-1?matrix[r][c+1]:null;
-      if((l&&l.name===n2)||(rr&&rr.name===n2))return true;
+function isNeighbor(n1,n2,matrix){
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++)
+    if(matrix[r]&&matrix[r][c]&&matrix[r][c].name===n1){
+      const up=r>0?matrix[r-1][c]:null;
+      const dn=r<ROWS-1?matrix[r+1][c]:null;
+      if((up&&up.name===n2)||(dn&&dn.name===n2)) return true;
     }
   return false;
 }
@@ -362,16 +383,27 @@ function isNeighborInTable(n1,n2,matrix){
 function exportToWord(){
   if(!currentMatrix)return;
   const{Document,Table,TableRow,TableCell,Paragraph,TextRun,AlignmentType,WidthType,BorderStyle,VerticalAlign,Packer}=window.docx;
-  const tableRows=currentMatrix.map(row=>new TableRow({
-    children:row.map(cell=>new TableCell({
-      width:{size:100/7,type:WidthType.PERCENTAGE},verticalAlign:VerticalAlign.CENTER,
-      borders:cell===null?{top:{style:BorderStyle.DASHED,size:1,color:'CCCCCC'},bottom:{style:BorderStyle.DASHED,size:1,color:'CCCCCC'},left:{style:BorderStyle.DASHED,size:1,color:'CCCCCC'},right:{style:BorderStyle.DASHED,size:1,color:'CCCCCC'}}:{},
-      children:cell?[
-        new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:String(cell.id),size:32,color:'666666'})]}),
-        new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:cell.name,size:32})]})
-      ]:[new Paragraph('')]
-    })),height:{value:900,rule:'atLeast'}
-  }));
+  const tableRows=[];
+  // 輸出順序：上方=後排(row ROWS-1)，左方=第7排(col COLS-1)
+  for(let ti=0;ti<ROWS;ti++){
+    const sr=ROWS-1-ti;
+    const cells=[];
+    for(let ci=0;ci<COLS;ci++){
+      const sc=COLS-1-ci;
+      const cell=currentMatrix[sr][sc];
+      const nil=isNull(sr,sc);
+      cells.push(new TableCell({
+        width:{size:100/COLS,type:WidthType.PERCENTAGE},
+        verticalAlign:VerticalAlign.CENTER,
+        borders:nil?{top:{style:BorderStyle.DASHED,size:1,color:'CCCCCC'},bottom:{style:BorderStyle.DASHED,size:1,color:'CCCCCC'},left:{style:BorderStyle.DASHED,size:1,color:'CCCCCC'},right:{style:BorderStyle.DASHED,size:1,color:'CCCCCC'}}:{},
+        children:cell?[
+          new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:String(cell.id),size:28,color:'666666'})]}),
+          new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:cell.name,size:28})]})
+        ]:[new Paragraph('')]
+      }));
+    }
+    tableRows.push(new TableRow({children:cells,height:{value:800,rule:'atLeast'}}));
+  }
   const doc=new Document({sections:[{children:[
     new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:'202 座位表',size:48})]}),
     new Paragraph(''),
